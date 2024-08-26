@@ -70,6 +70,6 @@
   }
   @media (max-width: 768px) {
     .gold-text__highlight {
-      font-size: 17px; /* Smaller font size for small devices */
+      font-size: 26px; /* Smaller font size for small devices */
     }
   }
