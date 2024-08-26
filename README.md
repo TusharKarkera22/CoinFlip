@@ -17,12 +17,3 @@ The CoinFlip project is a decentralized application (dApp) deployed on the Optim
 
 The CoinFlip smart contract is deployed on the [Optimism Sepolia testnet](https://sepolia.optimism.io). 
 
-## Installation
-
-To get started with the CoinFlip project locally, follow these steps:
-
- **Clone the Repository**:
-
-   ```bash
-   git clone https://github.com/yourusername/coinflip-project.git
-   cd coinflip-project
