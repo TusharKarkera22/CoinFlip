@@ -72,11 +72,11 @@ const CoinFlip = () => {
       <div className="flex-grow flex-col pt-8 pl-5 pr-5  sm:pl-10 sm:pr-10 justify-between">
         <div className="flex justify-between font-gilroy pb-8 font-medium relative p-2 items-center">
           <div
-            className="absolute top-0 right-0 -z-10 -mt-9 mr-9 h-[250px] w-[350px] rounded-full overflow-hidden"
+            className="absolute top-0 right-0 -z-10 -mt-9 mr-9 h-[250px] w-full rounded-full  overflow-hidden"
             style={{ filter: "blur(120px)" }}
           >
             <div
-              className="h-full w-full rounded-full"
+              className="h-full w-full rounded-full blur-[250px]"
               style={{
                 backgroundImage:
                   "linear-gradient(to top, rgba(5, 1, 45, 1), #314dad, rgba(5, 1, 45, 1))",
@@ -84,10 +84,10 @@ const CoinFlip = () => {
               }}
             ></div>
           </div>
-          <button className="pt-4 pb-4 pl-6 pr-6 text-[20px] hidden sm:flex border border-gray-600 text-white rounded-[50px] gap-2  flex-row justify-center items-center">
+          {/* <button className="pt-4 pb-4 pl-6 pr-6 text-[20px] hidden sm:flex border border-gray-600 text-white rounded-[50px] gap-2  flex-row justify-center items-center">
             <Gift className="text-[#FFDB93]" />
             Rewards
-          </button>
+          </button> */}
           <span className="gold-text__highlight" data-text="CoinFlip">
                 CoinFlip
               </span>
