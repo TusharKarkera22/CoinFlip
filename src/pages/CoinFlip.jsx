@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useStateContext } from "../context/index"; 
-import '../components/Coin/Coin.css';
+import { useStateContext } from "../context/index";
+import "../components/Coin/Coin.css";
 
-import Button from '../components/Button';
+import Button from "../components/Button";
 import { ethers } from "ethers";
 
-import { Store } from 'react-notifications-component';
+import { Store } from "react-notifications-component";
 
-import { Gift, } from 'lucide-react';
-import { ConnectWallet,
-	Web3Button, } from "@thirdweb-dev/react";
-import "../components/Goldtext.css"
+import { Gift } from "lucide-react";
+import { ConnectWallet, Web3Button } from "@thirdweb-dev/react";
+import "../components/Goldtext.css";
 
-const YourComponent = () => {
+const CoinFlip = () => {
   const {
     address,
     connectWithMetamask,
@@ -26,21 +25,17 @@ const YourComponent = () => {
     shouldShowNextTime,
     setShouldShowNextTime,
     formattedWalletBalance,
-    fetchUserBets
-    
-   
+    fetchUserBets,
   } = useStateContext();
 
-  const [betAmount, setBetAmount] = useState('0.0001');
+  const [betAmount, setBetAmount] = useState("0.0001");
   const [loading, setLoading] = useState(false);
   const [flipResult, setFlipResult] = useState("");
   const [flipEvent, setFlipEvent] = useState("");
   const [isFlipping, setIsFlipping] = useState(false);
   const [showCoin, setShowCoin] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [state, setState]=useState('heads');
-  
-
+  const [errorMessage, setErrorMessage] = useState("");
+  const [state, setState] = useState("heads");
 
   return (
     <div className="flex flex-row h-screen">
@@ -59,8 +54,6 @@ const YourComponent = () => {
           </div>
         </div>
       )}
-
-      
 
       {shouldShowNextTime && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
@@ -112,7 +105,11 @@ const YourComponent = () => {
             </button>
           </div>
           <button>
-            <ConnectWallet  switchToActiveChain={true}  hideTestnetFaucet={false} btnTitle="Login"  />
+            <ConnectWallet
+              switchToActiveChain={true}
+              hideTestnetFaucet={false}
+              btnTitle="Login"
+            />
           </button>
         </div>
 
@@ -122,11 +119,13 @@ const YourComponent = () => {
               <p className="text-white font-gilroy font-regular sm:text-[18px] text-[12px]">
                 House Balance
               </p>
-              <span className="gold-text__highlight" data-text={houseBalance}>{houseBalance}</span>
+              <span className="gold-text__highlight" data-text={houseBalance}>
+                {houseBalance}
+              </span>
               <p className="text-white font-gilroy font-regular sm:text-[18px] text-[12px]">
                 Enter the Bet Amount
               </p>
-              
+
               <input
                 className="bg-[#141135] p-4 rounded-xl sm:w-[400px] sm:h-[70px] w-full h-[50px] text-white font-lufga font-bold text-[24px]"
                 type="text"
@@ -150,187 +149,218 @@ const YourComponent = () => {
                 </p>
               </div>
               <Web3Button
-                    className='flex flex-row justify-center pl-6 pr-6 pt-2 pb-2 w-full mb-4 font-gilroy font-medium text-[20px] items-center rounded-[20px]'
-                    style={{ backgroundImage: 'linear-gradient(to right, #FEF2D0, #C18F5B)', color: 'black' }}
-                    
-                    contractAddress={import.meta.env.VITE_COIN_FLIP_CONTRACT_ADDRESS}
-                    
-                    
-                    action={async (contract) => {
-                      setShowCoin(true)
-                        setIsFlipping(true)
-                       const args= true
-                       
-                        const tx = await contract.call("placeBet",[args],{ value: ethers.utils.parseEther(betAmount) });
-                        console.log(tx)
-                        // Return the transaction to use it in onSuccess
-                        return tx;
-                    }}
-                    onSuccess={async (tx) => {
-                        try {
-                        // Wait for the transaction to be confirmed
-                        const receipt = await tx.receipt;
+                className="flex flex-row justify-center pl-6 pr-6 pt-2 pb-2 w-full mb-4 font-gilroy font-medium text-[20px] items-center rounded-[20px]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, #FEF2D0, #C18F5B)",
+                  color: "black",
+                }}
+                contractAddress={
+                  import.meta.env.VITE_COIN_FLIP_CONTRACT_ADDRESS
+                }
+                action={async (contract) => {
+                  setShowCoin(true);
+                  setIsFlipping(true);
+                  const args = true;
 
-                        // Loop through the events in the receipt
-                        const BetEvent = receipt.events?.find(e => e.event === "BetResult");
+                  const tx = await contract.call("placeBet", [args], {
+                    value: ethers.utils.parseEther(betAmount),
+                  });
+                  console.log(tx);
+                  // Return the transaction to use it in onSuccess
+                  return tx;
+                }}
+                onSuccess={async (tx) => {
+                  try {
+                    // Wait for the transaction to be confirmed
+                    const receipt = await tx.receipt;
 
-                        if (BetEvent) {
-                            const payout = BetEvent.args.payout.toString()
-                            const win = BetEvent.args.win
-                           
-                            const formattedReward = ethers.utils.formatEther(payout);
-                            
-                            setIsFlipping(false);
-                            if(win){
-                              setState('heads')
-                              setShouldShowConfetti(true)
-                              setFlipEvent("Heads")
-                            }else{
-                              setShouldShowNextTime(true)
-                              setFlipEvent("Tails")
-                            }
-                            setIsFlipping(false);
-                            setFlipResult(formattedReward)
-                            console.log(flipResult)
-                            
-                            setShowCoin(false)
-                            await fetchUserBets()
-                            
-                        } else {
-                            console.error("Betresult event not found in the transaction receipt.");
-                        }
-                        } catch (error) {
-                        console.error("Error processing the  event:", error);
-                        }
-                    }}
-                    onError={(error) => {
+                    // Loop through the events in the receipt
+                    const BetEvent = receipt.events?.find(
+                      (e) => e.event === "BetResult"
+                    );
+
+                    if (BetEvent) {
+                      const payout = BetEvent.args.payout.toString();
+                      const win = BetEvent.args.win;
+
+                      const formattedReward = ethers.utils.formatEther(payout);
+
                       setIsFlipping(false);
-                        setErrorMessage("There was an error processing your transaction. Please try again.");
-                        Store.addNotification({
-                          title: 'Error',
-                          message: 'There was an error processing your transaction. Please try again.',
-                          type: 'danger',
-                          insert: 'top',
-                          container: 'top-center',
-                          animationIn: ['animate__animated', 'animate__fadeIn'],
-                          animationOut: ['animate__animated', 'animate__fadeOut'],
-                          dismiss: {
-                            duration: 5000,
-                            onScreen: true,
-                          },
-                          slidingExit: {
-                            duration: 800,
-                            timingFunction: 'ease-out',
-                            delay: 0,
-                          },
-                          width: 500,
-                        });
-                        setIsSpinning(false)
-                        console.error("Error spinning the wheel:", error);
-                    }}
-                    >
-                    Bet Heads
-							</Web3Button>
+                      if (win) {
+                        setState("heads");
+                        setShouldShowConfetti(true);
+                        setFlipEvent("Heads");
+                      } else {
+                        setShouldShowNextTime(true);
+                        setFlipEvent("Tails");
+                      }
+                      setIsFlipping(false);
+                      setFlipResult(formattedReward);
+                      console.log(flipResult);
+
+                      setShowCoin(false);
+                      await fetchUserBets();
+                    } else {
+                      console.error(
+                        "Betresult event not found in the transaction receipt."
+                      );
+                    }
+                  } catch (error) {
+                    console.error("Error processing the  event:", error);
+                  }
+                }}
+                onError={(error) => {
+                  setIsFlipping(false);
+                  setErrorMessage(
+                    "There was an error processing your transaction. Please try again."
+                  );
+                  Store.addNotification({
+                    title: "Error",
+                    message:
+                      "There was an error processing your transaction. Please try again.",
+                    type: "danger",
+                    insert: "top",
+                    container: "top-center",
+                    animationIn: ["animate__animated", "animate__fadeIn"],
+                    animationOut: ["animate__animated", "animate__fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true,
+                    },
+                    slidingExit: {
+                      duration: 800,
+                      timingFunction: "ease-out",
+                      delay: 0,
+                    },
+                    width: 500,
+                  });
+                  setIsSpinning(false);
+                  console.error("Error spinning the wheel:", error);
+                }}
+              >
+                Bet Heads
+              </Web3Button>
               <Web3Button
-                    className='flex flex-row justify-center pl-6 pr-6 pt-2 pb-2 w-full mb-4 font-gilroy font-medium text-[20px] items-center rounded-[20px]'
-                    style={{ backgroundImage: 'linear-gradient(to right, #FEF2D0, #C18F5B)', color: 'black' }}
-                    
-                    contractAddress={import.meta.env.VITE_COIN_FLIP_CONTRACT_ADDRESS}
-                    
-                    
-                    action={async (contract) => {
-                      setShowCoin(true)
-                        setIsFlipping(true)
-                       const args= false
-                       
-                        const tx = await contract.call("placeBet",[args],{ value: ethers.utils.parseEther(betAmount) });
-                        console.log(tx)
-                        // Return the transaction to use it in onSuccess
-                        return tx;
-                    }}
-                    onSuccess={async (tx) => {
-                        try {
-                        // Wait for the transaction to be confirmed
-                        const receipt = await tx.receipt;
+                className="flex flex-row justify-center pl-6 pr-6 pt-2 pb-2 w-full mb-4 font-gilroy font-medium text-[20px] items-center rounded-[20px]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, #FEF2D0, #C18F5B)",
+                  color: "black",
+                }}
+                contractAddress={
+                  import.meta.env.VITE_COIN_FLIP_CONTRACT_ADDRESS
+                }
+                action={async (contract) => {
+                  setShowCoin(true);
+                  setIsFlipping(true);
+                  const args = false;
 
-                        // Loop through the events in the receipt
-                        const BetEvent = receipt.events?.find(e => e.event === "BetResult");
+                  const tx = await contract.call("placeBet", [args], {
+                    value: ethers.utils.parseEther(betAmount),
+                  });
+                  console.log(tx);
+                  // Return the transaction to use it in onSuccess
+                  return tx;
+                }}
+                onSuccess={async (tx) => {
+                  try {
+                    // Wait for the transaction to be confirmed
+                    const receipt = await tx.receipt;
 
-                        if (BetEvent) {
-                            const payout = BetEvent.args.payout.toString()
-                            const win = BetEvent.args.win
-                           
-                            const formattedReward = ethers.utils.formatEther(payout);
-                            
-                            
-                            
-                            if(win){
-                              setState('tails')
-                              setShouldShowConfetti(true)
-                              setFlipEvent("Tails")
-                            }else{
-                              setShouldShowNextTime(true)
-                              setFlipEvent("Heads")
-                            }
-                            setIsFlipping(false);
-                            setFlipResult(formattedReward)
-                            console.log(flipResult)
-                            
-                            setShowCoin(false)
-                            await fetchUserBets()
-                            
-                            
-                        } else {
-                            console.error("Bet result event not found in the transaction receipt.");
-                        }
-                        } catch (error) {
-                        console.error("Error processing the  event:", error);
-                        }
-                    }}
-                    onError={(error) => {
+                    // Loop through the events in the receipt
+                    const BetEvent = receipt.events?.find(
+                      (e) => e.event === "BetResult"
+                    );
+
+                    if (BetEvent) {
+                      const payout = BetEvent.args.payout.toString();
+                      const win = BetEvent.args.win;
+
+                      const formattedReward = ethers.utils.formatEther(payout);
+
+                      if (win) {
+                        setState("tails");
+                        setShouldShowConfetti(true);
+                        setFlipEvent("Tails");
+                      } else {
+                        setShouldShowNextTime(true);
+                        setFlipEvent("Heads");
+                      }
                       setIsFlipping(false);
-                        setErrorMessage("There was an error processing your transaction. Please try again.");
-                        Store.addNotification({
-                          title: 'Error',
-                          message: 'There was an error processing your transaction. Please try again.',
-                          type: 'danger',
-                          insert: 'top',
-                          container: 'top-center',
-                          animationIn: ['animate__animated', 'animate__fadeIn'],
-                          animationOut: ['animate__animated', 'animate__fadeOut'],
-                          dismiss: {
-                            duration: 5000,
-                            onScreen: true,
-                          },
-                          slidingExit: {
-                            duration: 800,
-                            timingFunction: 'ease-out',
-                            delay: 0,
-                          },
-                          width: 500,
-                        });
-                        setIsSpinning(false)
-                        console.error("Error spinning the wheel:", error);
-                    }}
-                    >
-                    Bet Tails
-							</Web3Button>
+                      setFlipResult(formattedReward);
+                      console.log(flipResult);
+
+                      setShowCoin(false);
+                      await fetchUserBets();
+                    } else {
+                      console.error(
+                        "Bet result event not found in the transaction receipt."
+                      );
+                    }
+                  } catch (error) {
+                    console.error("Error processing the  event:", error);
+                  }
+                }}
+                onError={(error) => {
+                  setIsFlipping(false);
+                  setErrorMessage(
+                    "There was an error processing your transaction. Please try again."
+                  );
+                  Store.addNotification({
+                    title: "Error",
+                    message:
+                      "There was an error processing your transaction. Please try again.",
+                    type: "danger",
+                    insert: "top",
+                    container: "top-center",
+                    animationIn: ["animate__animated", "animate__fadeIn"],
+                    animationOut: ["animate__animated", "animate__fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true,
+                    },
+                    slidingExit: {
+                      duration: 800,
+                      timingFunction: "ease-out",
+                      delay: 0,
+                    },
+                    width: 500,
+                  });
+                  setIsSpinning(false);
+                  console.error("Error spinning the wheel:", error);
+                }}
+              >
+                Bet Tails
+              </Web3Button>
             </div>
-            <div className='flex flex-col mr-40 mt-20 '>
-							{showCoin&& <div className="coin-animation text-white">
-									<div id="coin" className={`${state} ${isFlipping ? 'spin' : ''}`} key={+new Date()}>
-										<div class="side-a">
-											<img className="coin-image"  src='/coin1.png' />
-										</div>
-										<div className="side-b">
-										<img className="coin-image"  src='/coin2.png' />
-										</div> 						</div> </div>}
-							{!isFlipping && flipResult &&!showCoin&& <div className="coin-result text-white">
-									
-								{flipEvent === 'Heads' ? <img  className="coin-image"  src='/coin1.png' /> : <img  className="coin-image"  src='/coin2.png' />
-										}
-									</div>}
-							</div>
+            <div className="flex flex-col mr-40 mt-20 ">
+              {showCoin && (
+                <div className="coin-animation text-white">
+                  <div
+                    id="coin"
+                    className={`${state} ${isFlipping ? "spin" : ""}`}
+                    key={+new Date()}
+                  >
+                    <div class="side-a">
+                      <img className="coin-image" src="/coin1.png" />
+                    </div>
+                    <div className="side-b">
+                      <img className="coin-image" src="/coin2.png" />
+                    </div>{" "}
+                  </div>{" "}
+                </div>
+              )}
+              {!isFlipping && flipResult && !showCoin && (
+                <div className="coin-result text-white">
+                  {flipEvent === "Heads" ? (
+                    <img className="coin-image" src="/coin1.png" />
+                  ) : (
+                    <img className="coin-image" src="/coin2.png" />
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -349,6 +379,16 @@ const YourComponent = () => {
                 <li>Win: {bet.win ? "Yes" : "No"}</li>
                 <li>Payout: {bet.payout} ETH</li>
                 <li>Time: {bet.timestamp}</li>
+                <li>
+                  <a
+                    href={bet.transactionLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 underline"
+                  >
+                    View Transaction
+                  </a>
+                </li>
               </div>
             ))}
           </ul>
@@ -358,4 +398,4 @@ const YourComponent = () => {
   );
 };
 
-export default YourComponent;
+export default CoinFlip;
