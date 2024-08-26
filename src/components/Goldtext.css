@@ -1,0 +1,75 @@
+.gold-container {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    max-width: 36rem;
+  }
+  
+  .gold-text__highlight {
+    font-family: 'Gilroy', serif;
+   
+    font-size: 30px;
+    word-spacing: 0.2em;
+    padding: 0;
+    line-height: 1;
+    white-space: nowrap;
+    color: transparent;
+    background-color: #FFDB93;
+    background-image: radial-gradient(ellipse farthest-corner at right bottom, white 0%, #f0bb7a 20%, #FFDB93 60%, transparent 80%),
+                      radial-gradient(ellipse farthest-corner at left top, white 0%, #f0bb7a 50%, #de9945 75%, #FFDB93 100%);
+    background-size: 100% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    position: relative;
+    display: inline-block;
+    z-index: 1;
+  }
+  
+  .gold-text__highlight:before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #FFDB93;
+    z-index: -1;
+   
+  }
+  
+  .gold-text__highlight:after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    background-image: linear-gradient(100deg, transparent 0%, transparent 6rem, white 11rem, transparent 11.15rem, transparent 15rem, rgba(255, 255, 255, 0.3) 20rem, transparent 25rem, transparent 27rem, rgba(255, 255, 255, 0.6) 32rem, white 33rem, rgba(255, 255, 255, 0.3) 33.15rem, transparent 38rem, transparent 40rem, rgba(255, 255, 255, 0.3) 45rem, transparent 50rem, transparent 100%);
+    background-clip: text;
+    background-size: 60rem 100%;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    animation: shine 4s linear infinite alternate;
+  }
+  
+  @-webkit-keyframes shine {
+    0%, 25% {
+      background-position: -50rem 0;
+    }
+    100% {
+      background-position: 30rem 0;
+    }
+  }
+  
+  @keyframes shine {
+    0%, 25% {
+      background-position: -50rem 0;
+    }
+    100% {
+      background-position: 30rem 0;
+    }
+  }
+  @media (max-width: 768px) {
+    .gold-text__highlight {
+      font-size: 17px; /* Smaller font size for small devices */
+    }
+  }
